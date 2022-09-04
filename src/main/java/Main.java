@@ -1,4 +1,5 @@
 import entity.*;
+import jakarta.persistence.Query;
 import org.flywaydb.core.Flyway;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -6,6 +7,9 @@ import org.hibernate.cfg.Configuration;
 
 public class Main {
     public static void main(String[] args) {
+        Console console = new Console();
+        console.start();
+
         String url = "jdbc:mysql://localhost:3306/hibernate_course_project";
         String user_name = "root";
         String pass = "root1";
@@ -22,10 +26,12 @@ public class Main {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
 
-        System.out.println(session.get(UserRole.class, 1));
-        System.out.println(session.get(User.class,1));
-        session.getTransaction().commit();
-        session.close();
+
+        Query query = session.createQuery("from User where userName=:userName", User.class);
+        query.setParameter("userName", "mar_an");
+        User result = (User) query.getSingleResult();
+        System.out.println(result.getPassword());
+        System.out.println(result.getUserName());
 
 
         //-----------------------------------------------------------
