@@ -18,7 +18,6 @@ public class Console {
             if(authorization.authorizationMethod()){
                 return;
             }
-            continue;
         }
 
 //        exit();

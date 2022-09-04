@@ -5,6 +5,7 @@ import dao.impl.UserDAO_Impl;
 import entity.User;
 import entity.UserRole;
 import lombok.Data;
+
 @Data
 public class Authorization {
     public static UserRole.Role role;
@@ -18,11 +19,12 @@ public class Authorization {
         this.currentPassword = currentPassword;
     }
 
-    public boolean authorizationMethod(){
+    public boolean authorizationMethod() {
         UserDAO userDAO = new UserDAO_Impl();
         User user = userDAO.getUserByUserName(currentUserName);
-        if (user.getUserName().equals(currentUserName)&&user.getPassword().equals(currentPassword)){
-            System.out.printf("Вітаю %s, вхід успішно виконано\n", currentUserName);
+        if (user.getUserName().equals(currentUserName) && user.getPassword().equals(currentPassword)) {
+            System.out.printf("Вітаю %s! вхід успішно виконано\n", currentUserName);
+            currentUser = user;
             role = user.getUserRole().getRole();
             return true;
         }
