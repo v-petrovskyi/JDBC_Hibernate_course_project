@@ -10,28 +10,28 @@ public class Main {
         Console console = new Console();
         console.start();
 
-        String url = "jdbc:mysql://localhost:3306/hibernate_course_project";
-        String user_name = "root";
-        String pass = "root1";
+//        String url = "jdbc:mysql://localhost:3306/hibernate_course_project";
+//        String user_name = "root";
+//        String pass = "root1";
 
 
 
-        SessionFactory sessionFactory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
+//        SessionFactory sessionFactory = new Configuration()
+//                .configure("hibernate.cfg.xml")
+//                .buildSessionFactory();
 //
 //        Flyway flyway = Flyway.configure().dataSource(url,user_name,pass).load();
 //        flyway.migrate();
 
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-
-
-        Query query = session.createQuery("from User where userName=:userName", User.class);
-        query.setParameter("userName", "mar_an");
-        User result = (User) query.getSingleResult();
-        System.out.println(result.getPassword());
-        System.out.println(result.getUserName());
+//        Session session = sessionFactory.getCurrentSession();
+//        session.beginTransaction();
+//
+//
+//        Query query = session.createQuery("from User where userName=:userName", User.class);
+//        query.setParameter("userName", "mar_an");
+//        User result = (User) query.getSingleResult();
+//        System.out.println(result.getPassword());
+//        System.out.println(result.getUserName());
 
 
         //-----------------------------------------------------------
