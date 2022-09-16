@@ -14,6 +14,7 @@ public class Main {
         Console console = new Console();
         console.start();
 
+
 //        String url = "jdbc:mysql://localhost:3306/hibernate_course_project";
 //        String user_name = "root";
 //        String pass = "root1";
