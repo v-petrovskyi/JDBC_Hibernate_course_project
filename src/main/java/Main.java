@@ -1,12 +1,16 @@
 import entity.*;
 import jakarta.persistence.Query;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.flywaydb.core.Flyway;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class Main {
+    private static Logger LOG = LogManager.getLogger(Main.class);
     public static void main(String[] args) {
+        LOG.info("main method started");
         Console console = new Console();
         console.start();
 
