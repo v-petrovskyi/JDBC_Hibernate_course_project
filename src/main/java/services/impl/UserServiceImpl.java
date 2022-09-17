@@ -22,7 +22,6 @@ public class UserServiceImpl implements UserService {
         User user = userDAO.getUserByUserName(userName);
         if (user == null) {
             System.out.println("Користувача з ім'ям " + userName + " не знайдено");
-
         }
         return user;
     }
@@ -45,6 +44,7 @@ public class UserServiceImpl implements UserService {
             System.out.printf("користувача з id %d успішно видалено\n",id);
             return true;
         }
+        System.out.printf("користувача з id %d не знайдено\n",id);
         return false;
     }
 }
