@@ -13,8 +13,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(int id) {
-
-        return null;
+        User userById = userDAO.getUserById(id);
+        return userById;
     }
 
     @Override
@@ -29,16 +29,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean createUser(User user) {
-        return false;
+        userDAO.createUser(user);
+        return true;
     }
 
     @Override
     public boolean updateUser(User user) {
-        return false;
+        userDAO.updateUser(user);
+        return true;
     }
 
     @Override
-    public boolean deleteUser(User user) {
+    public boolean deleteUserById(int id) {
+        if (userDAO.deleteUserById(id)){
+            System.out.printf("користувача з id %d успішно видалено\n",id);
+            return true;
+        }
         return false;
     }
 }

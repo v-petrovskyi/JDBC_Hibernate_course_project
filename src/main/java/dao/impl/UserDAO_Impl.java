@@ -24,13 +24,14 @@ public class UserDAO_Impl implements UserDAO {
     public User getUserById(int id) {
         LOG.info("method getUserById starts looking user with id = {}", id);
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
         try {
             User user = session.get(User.class, id);
             session.getTransaction().commit();
             return user;
         } catch (NoResultException e) {
             LOG.error(e);
-        }finally {
+        } finally {
             session.close();
         }
         return null;
@@ -45,12 +46,12 @@ public class UserDAO_Impl implements UserDAO {
         query.setParameter("userName", userName);
         User user = null;
         try {
-            user= (User) query.getSingleResult();
+            user = (User) query.getSingleResult();
             session.getTransaction().commit();
             return user;
         } catch (NoResultException e) {
             LOG.error(e);
-        }finally {
+        } finally {
             session.close();
         }
         return null;
@@ -61,6 +62,7 @@ public class UserDAO_Impl implements UserDAO {
         LOG.info("add new user to table user");
         LOG.info(user);
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
         session.persist(user);
         session.getTransaction().commit();
         session.close();
@@ -72,20 +74,29 @@ public class UserDAO_Impl implements UserDAO {
     public boolean updateUser(User updatedUser) {
         // todo add LOG and try catch
         Session session = sessionFactory.openSession();
-        session.merge(updatedUser);
+        session.beginTransaction();
+        User oldUser = session.get(User.class, updatedUser.getId());
+// todo дописати
         session.getTransaction().commit();
         session.close();
         return true;
     }
 
     @Override
-    public boolean deleteUser(User user) {
+    public boolean deleteUserById(int id) {
         // todo add LOG and try catch
         Session session = sessionFactory.openSession();
-        session.remove(user);
-        session.getTransaction().commit();
-        session.close();
-        return false;
+        session.beginTransaction();
+        try {
+            session.remove(session.get(User.class, id));
+            session.getTransaction().commit();
+            return true;
+        } catch (IllegalArgumentException e) {
+            LOG.error(e);
+            return false;
+        } finally {
+            session.close();
+        }
     }
 
 }

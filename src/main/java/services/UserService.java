@@ -7,6 +7,6 @@ public interface UserService {
     User getUserByUserName(String userName);
     boolean createUser(User user);
     boolean updateUser(User user);
-    boolean deleteUser(User user);
+    boolean deleteUserById(int id);
 
 }

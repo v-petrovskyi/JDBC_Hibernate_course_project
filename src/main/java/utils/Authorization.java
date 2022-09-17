@@ -15,7 +15,7 @@ public class Authorization {
     private static final Logger LOG = LogManager.getLogger(Authorization.class);
 
     public static UserRole.Role role;
-    private User currentUser;
+    public static User currentUser;
     private String currentUserName;
     private String currentPassword;
 
