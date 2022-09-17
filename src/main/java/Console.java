@@ -1,5 +1,8 @@
+import dao.impl.UserDAO_Impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import services.UserService;
+import services.impl.UserServiceImpl;
 import utils.Authorization;
 
 import java.io.BufferedReader;
@@ -7,7 +10,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Console {
+    private static UserService userService;
     private static final Logger LOG = LogManager.getLogger(Console.class);
+
+    static {
+        userService = new UserServiceImpl(new UserDAO_Impl());
+    }
 
 
     public void start(){
