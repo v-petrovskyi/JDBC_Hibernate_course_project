@@ -37,33 +37,6 @@ public class Console {
         }
         mainMenu();
 
-
-//        switch (readFromConsole()) {
-//            case "fetch_all_users":
-//                break;
-//            case "fetch_all_incidents":
-//                break;
-//            case "fetch_all_active_incidents":
-//                break;
-//            case "fetch_user_by_{id}":
-//                break;
-//            case "add_user":
-//                break;
-//            case "delete_user":
-//                break;
-//            case "subscribe_service_{id} ":
-//                break;
-//            case "unsubscribe_service_{id}":
-//                break;
-//            case "create_incident":
-//                break;
-//            case "close_incident":
-//                break;
-//            case "q":
-//                exit();
-//            default:
-//                System.out.println("невірна команда");
-//    }
     }
 
     private void mainMenu() {

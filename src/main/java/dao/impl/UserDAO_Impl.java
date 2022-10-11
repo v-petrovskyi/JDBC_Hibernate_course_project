@@ -13,7 +13,7 @@ import org.hibernate.SessionFactory;
 
 
 public class UserDAO_Impl implements UserDAO {
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
     private static final Logger LOG = LogManager.getLogger(UserDAO_Impl.class);
 
     public UserDAO_Impl() {
@@ -72,11 +72,19 @@ public class UserDAO_Impl implements UserDAO {
 
     @Override
     public boolean updateUser(User updatedUser) {
-        // todo add LOG and try catch
+        LOG.info("update user to table user");
+        LOG.info(updatedUser);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         User oldUser = session.get(User.class, updatedUser.getId());
-// todo дописати
+        if (updatedUser.getUserName() != null) oldUser.setUserName(updatedUser.getUserName());
+        if (updatedUser.getPassword() != null) oldUser.setPassword(updatedUser.getPassword());
+        if (updatedUser.getUserRole() != null) oldUser.setUserRole(updatedUser.getUserRole());
+        if (updatedUser.getProfile() !=null) oldUser.setProfile(updatedUser.getProfile());
+        if (updatedUser.getServices()!=null) oldUser.setServices(updatedUser.getServices());
+        if(updatedUser.getIncidents()!=null) oldUser.setIncidents(updatedUser.getIncidents());
+        LOG.info("user updated successfully");
+        LOG.info(oldUser);
         session.getTransaction().commit();
         session.close();
         return true;
@@ -84,12 +92,13 @@ public class UserDAO_Impl implements UserDAO {
 
     @Override
     public boolean deleteUserById(int id) {
-        // todo add LOG and try catch
+        LOG.info("try to delete user with id {}", id);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         try {
             session.remove(session.get(User.class, id));
             session.getTransaction().commit();
+            LOG.info("user with id {} deleted successfully", id);
             return true;
         } catch (IllegalArgumentException e) {
             LOG.error(e);
@@ -98,5 +107,4 @@ public class UserDAO_Impl implements UserDAO {
             session.close();
         }
     }
-
 }
