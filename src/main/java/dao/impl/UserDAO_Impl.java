@@ -77,7 +77,7 @@ public class UserDAO_Impl implements UserDAO {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         User oldUser = session.get(User.class, updatedUser.getId());
-        if (updatedUser.getUserName() != null) oldUser.setUserName(updatedUser.getUserName());
+        if (updatedUser.getUserName() != null) oldUser.setUserName(updatedUser.getUserName());// todo перенести у сервіс
         if (updatedUser.getPassword() != null) oldUser.setPassword(updatedUser.getPassword());
         if (updatedUser.getUserRole() != null) oldUser.setUserRole(updatedUser.getUserRole());
         if (updatedUser.getProfile() !=null) oldUser.setProfile(updatedUser.getProfile());
