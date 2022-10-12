@@ -42,7 +42,7 @@ public class ProfileDAOImpl implements ProfileDAO {
         LOG.info("update profile with id ");
         Session session= sessionFactory.openSession();
         session.beginTransaction();
-        session.persist(updatedProfile);
+        session.merge(updatedProfile);
         session.getTransaction().commit();
         session.close();
         LOG.info("profile updated");

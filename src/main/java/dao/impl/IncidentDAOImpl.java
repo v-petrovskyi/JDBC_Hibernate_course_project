@@ -2,7 +2,6 @@ package dao.impl;
 
 import dao.IncidentDAO;
 import entity.Incident;
-import entity.User;
 import jakarta.persistence.NoResultException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,17 +21,18 @@ public class IncidentDAOImpl implements IncidentDAO {
     public Incident getIncidentById(int id) {
         LOG.info("method getIncidentById starts looking incident with id = {}", id);
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        try {
-            Incident incident =session.get(Incident.class, id);
+        try (session) {
             session.beginTransaction();
-            LOG.info("incident was found");
-            LOG.info(incident);
+            Incident incident = session.get(Incident.class, id);
+            if (incident != null) {
+                LOG.info("incident was found");
+                LOG.info(incident);
+                return incident;
+            }
         } catch (NoResultException e) {
             LOG.error(e);
-        } finally {
-            session.close();
         }
+        LOG.info("incident not found");
         return null;
     }
 
@@ -42,7 +42,7 @@ public class IncidentDAOImpl implements IncidentDAO {
         LOG.info(incident);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.persist(incident);
+        session.merge(incident);
         session.getTransaction().commit();
         session.close();
         LOG.info("incident was successfully added to table incident");
@@ -55,9 +55,8 @@ public class IncidentDAOImpl implements IncidentDAO {
         LOG.info(incident);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-//        Incident oldIncident = session.get(Incident.class, incident.getId());
         session.merge(incident);
-        LOG.info("user updated successfully");
+        LOG.info("incident updated successfully");
         LOG.info(incident);
         session.getTransaction().commit();
         session.close();

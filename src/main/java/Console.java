@@ -1,8 +1,12 @@
+import dao.impl.IncidentDAOImpl;
 import dao.impl.UserDAO_Impl;
+import entity.Incident;
 import entity.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import services.IncidentService;
 import services.UserService;
+import services.impl.IncidentServiceImpl;
 import services.impl.UserServiceImpl;
 import utils.Authorization;
 
@@ -13,10 +17,13 @@ import java.util.regex.Pattern;
 
 public class Console {
     private static UserService userService;
+    private static IncidentService incidentService;
     private static final Logger LOG = LogManager.getLogger(Console.class);
 
     static {
         userService = new UserServiceImpl(new UserDAO_Impl());
+        incidentService = new IncidentServiceImpl(new IncidentDAOImpl());
+
     }
 
 
@@ -59,7 +66,8 @@ public class Console {
         } else if (Pattern.matches("update_user_\\d+", string)) {
             // method fetch_user_by_
         } else if (Pattern.matches("delete_user_\\d+", string)) {
-            if (Authorization.role.equals(UserRole.Role.ADMIN)|| Authorization.role.equals(UserRole.Role.SUPER_ADMIN)){
+            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
                 userService.deleteUserById(Integer.parseInt(string.replaceAll("\\D+", "")));
             } else {
                 System.out.println("Немає доступу");
@@ -69,9 +77,20 @@ public class Console {
         } else if (Pattern.matches("unsubscribe_service_\\d+", string)) {
 //            unsubscribe_service_{id}
         } else if (Pattern.matches("create_incident", string)) {
-//            create_incident
-        } else if (Pattern.matches("close_incident", string)) {
-//            close_incident
+            System.out.println("input service name");
+            String serviceName = readFromConsole();
+            System.out.println("input problem description");
+            String problemDescription = readFromConsole();
+            if (incidentService.createIncident(new Incident(serviceName, true, problemDescription, Authorization.currentUser))){
+                System.out.println("інцидент успішно створено");
+            }
+        } else if (Pattern.matches("close_incident_\\d+", string)) {
+            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+                incidentService.closeIncident(Integer.parseInt(string.replaceAll("\\D+", "")));
+            } else {
+                System.out.println("Немає доступу");
+            }
         } else if (Pattern.matches("q", string)) {
             exit();
         } else {

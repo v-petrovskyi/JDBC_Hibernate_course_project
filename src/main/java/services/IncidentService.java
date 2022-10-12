@@ -7,4 +7,5 @@ public interface IncidentService {
     boolean createIncident(Incident incident);
     boolean updateIncident(Incident incident);
     boolean deleteIncidentById(int id);
+    boolean closeIncident(int id);
 }

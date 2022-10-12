@@ -24,16 +24,19 @@ public class UserDAO_Impl implements UserDAO {
     public User getUserById(int id) {
         LOG.info("method getUserById starts looking user with id = {}", id);
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        try {
+        try (session) {
+            session.beginTransaction();
             User user = session.get(User.class, id);
             session.getTransaction().commit();
-            return user;
+            if (user!=null){
+                LOG.info("user was found");
+                LOG.info(user);
+                return user;
+            }
         } catch (NoResultException e) {
             LOG.error(e);
-        } finally {
-            session.close();
         }
+        LOG.info("user not found");
         return null;
     }
 
@@ -72,19 +75,12 @@ public class UserDAO_Impl implements UserDAO {
 
     @Override
     public boolean updateUser(User updatedUser) {
-        LOG.info("update user to table user");
-        LOG.info(updatedUser);
+        LOG.info("update user in table user");
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        User oldUser = session.get(User.class, updatedUser.getId());
-        if (updatedUser.getUserName() != null) oldUser.setUserName(updatedUser.getUserName());// todo перенести у сервіс
-        if (updatedUser.getPassword() != null) oldUser.setPassword(updatedUser.getPassword());
-        if (updatedUser.getUserRole() != null) oldUser.setUserRole(updatedUser.getUserRole());
-        if (updatedUser.getProfile() !=null) oldUser.setProfile(updatedUser.getProfile());
-        if (updatedUser.getServices()!=null) oldUser.setServices(updatedUser.getServices());
-        if(updatedUser.getIncidents()!=null) oldUser.setIncidents(updatedUser.getIncidents());
+        session.merge(updatedUser);
         LOG.info("user updated successfully");
-        LOG.info(oldUser);
+        LOG.info(updatedUser);
         session.getTransaction().commit();
         session.close();
         return true;

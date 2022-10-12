@@ -34,4 +34,16 @@ public class IncidentServiceImpl implements IncidentService {
     public boolean deleteIncidentById(int id) {
         return incidentDAO.deleteIncidentById(id);
     }
+
+    @Override
+    public boolean closeIncident(int id) {
+        LOG.info("closeIncident id={}", id);
+        Incident incident = incidentDAO.getIncidentById(id);
+        if (incident == null) {
+            System.out.printf("Incident with id %d not found\n",id);
+            return false;
+        }
+        incident.setActive(false);
+        return incidentDAO.updateIncident(incident);
+    }
 }

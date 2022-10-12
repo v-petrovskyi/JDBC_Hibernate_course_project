@@ -29,6 +29,12 @@ public class Incident {
     public Incident() {
     }
 
+    public Incident(String serviceName, boolean isActive, String problemDescription) {
+        this.serviceName = serviceName;
+        this.isActive = isActive;
+        this.problemDescription = problemDescription;
+    }
+
     public Incident(String serviceName, boolean isActive, String problemDescription, User user) {
         this.serviceName = serviceName;
         this.isActive = isActive;
