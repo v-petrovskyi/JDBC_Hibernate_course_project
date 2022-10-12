@@ -21,7 +21,7 @@ public class UserDAO_Impl implements UserDAO {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         LOG.info("method getUserById starts looking user with id = {}", id);
         Session session = sessionFactory.openSession();
         try (session) {

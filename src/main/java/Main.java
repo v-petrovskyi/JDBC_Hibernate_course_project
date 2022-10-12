@@ -12,9 +12,15 @@ public class Main {
 
     public static void main(String[] args) {
         LOG.info("main method started");
+        String url = "jdbc:mysql://localhost:3306/hibernate_course_project";
+        String user_name = "root";
+        String pass = "root1";
+//        Flyway flyway = Flyway.configure().dataSource(url, user_name, pass).load();
+//        flyway.migrate();
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(url, user_name,pass);
+        flyway.migrate();
 
-        //        Flyway flyway = Flyway.configure().dataSource(url,user_name,pass).load();
-        //        flyway.migrate();
 
         Console console = new Console();
         console.start();

@@ -20,11 +20,13 @@ INSERT INTO hibernate_course_project.user (hibernate_course_project.user.user_na
                                            hibernate_course_project.user.password,
                                            hibernate_course_project.user.user_role_id,
                                            hibernate_course_project.user.profile_id)
-VALUES ('mar_an', '3kYmHe788A', 1, 1),
-       ('sh_bu', 'YJzF32d23v', 1, 2),
-       ('re_mu', '4i7D5FaU3d', 1, 3),
-       ('yo_na', 'G9VbCh897n', 2, 4),
-       ('an_sa', 'fDjMJ4h346', 3, 5);
+VALUES ('mar_an', 'mar_an', 1, 1),
+       ('sh_bu', 'sh_bu', 1, 2),
+       ('re_mu', 're_mu', 1, 3),
+       ('yo_na', 'yo_na', 2, 4),
+       ('an_sa', 'an_sa', 3, 5),
+       ('1','1',3,null),
+       ('2','2',1,null);
 
 INSERT INTO hibernate_course_project.service(hibernate_course_project.service.service_name, hibernate_course_project.service.is_active, hibernate_course_project.service.service_month_price, hibernate_course_project.service.customer_id)
 VALUES ('Tarif S', 1, 99.99, 6846548),

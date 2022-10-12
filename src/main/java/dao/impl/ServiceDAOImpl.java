@@ -19,7 +19,7 @@ public class ServiceDAOImpl implements ServiceDAO {
 
     @Override
     public Service getServiceById(int id) {
-        LOG.info("method getServiceById starts looking user with id = {}", id);
+        LOG.info("method getServiceById starts looking service with id = {}", id);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Service service = session.get(Service.class, id);

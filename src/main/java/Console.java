@@ -1,12 +1,17 @@
 import dao.impl.IncidentDAOImpl;
+import dao.impl.ServiceDAOImpl;
 import dao.impl.UserDAO_Impl;
 import entity.Incident;
+import entity.Service;
+import entity.User;
 import entity.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import services.IncidentService;
+import services.ServiceService;
 import services.UserService;
 import services.impl.IncidentServiceImpl;
+import services.impl.ServiceServiceImpl;
 import services.impl.UserServiceImpl;
 import utils.Authorization;
 
@@ -16,14 +21,15 @@ import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
 public class Console {
-    private static UserService userService;
-    private static IncidentService incidentService;
+    private static final UserService userService;
+    private static final IncidentService incidentService;
+    private static final ServiceService serviceService;
     private static final Logger LOG = LogManager.getLogger(Console.class);
 
     static {
         userService = new UserServiceImpl(new UserDAO_Impl());
         incidentService = new IncidentServiceImpl(new IncidentDAOImpl());
-
+        serviceService = new ServiceServiceImpl(new ServiceDAOImpl());
     }
 
 
@@ -73,15 +79,46 @@ public class Console {
                 System.out.println("Немає доступу");
             }
         } else if (Pattern.matches("subscribe_service_\\d+", string)) {
-//            subscribe_service_{id}
+            Service service = serviceService.getServiceById(Integer.parseInt(string.replaceAll("\\D+", "")));
+            if (service == null) {
+                mainMenu();
+            }
+            User user;
+            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+                System.out.println("Введіть id користувача");
+                user = userService.getUserById(Integer.parseInt(readFromConsole()));
+                if (user == null) {
+                    mainMenu();
+                }
+            } else {
+                user = Authorization.currentUser;
+            }
+            userService.subscribeUserToService(user, service);
         } else if (Pattern.matches("unsubscribe_service_\\d+", string)) {
-//            unsubscribe_service_{id}
+            Service service = serviceService.getServiceById(Integer.parseInt(string.replaceAll("\\D+", "")));
+            if (service == null) {
+                mainMenu();
+            }
+            User user;
+            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+                System.out.println("Введіть id користувача");
+                user = userService.getUserById(Integer.parseInt(readFromConsole()));
+                if (user == null) {
+                    mainMenu();
+                }
+            } else {
+                user = Authorization.currentUser;
+            }
+            userService.unsubscribeUserFromService(user, service);
+
         } else if (Pattern.matches("create_incident", string)) {
             System.out.println("input service name");
             String serviceName = readFromConsole();
             System.out.println("input problem description");
             String problemDescription = readFromConsole();
-            if (incidentService.createIncident(new Incident(serviceName, true, problemDescription, Authorization.currentUser))){
+            if (incidentService.createIncident(new Incident(serviceName, true, problemDescription, Authorization.currentUser))) {
                 System.out.println("інцидент успішно створено");
             }
         } else if (Pattern.matches("close_incident_\\d+", string)) {

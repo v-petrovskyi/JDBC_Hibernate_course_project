@@ -30,7 +30,7 @@ public class User {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_services",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
@@ -49,4 +49,17 @@ public class User {
         this.profile = profile;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id=").append(id);
+        sb.append(", userName='").append(userName).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", userRole=").append(userRole);
+        sb.append(", profile=").append(profile);
+        sb.append(", services=").append(services);
+        sb.append(", incidents=").append(incidents);
+        sb.append('}');
+        return sb.toString();
+    }
 }

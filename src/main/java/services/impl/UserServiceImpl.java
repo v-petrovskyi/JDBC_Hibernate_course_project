@@ -2,6 +2,7 @@ package services.impl;
 
 import dao.UserDAO;
 import dao.impl.UserDAO_Impl;
+import entity.Service;
 import entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +60,35 @@ public class UserServiceImpl implements UserService {
         }
         System.out.printf("користувача з id %d не знайдено\n", id);
         LOG.info("user with id={} not founded", id);
+        return false;
+    }
+
+    @Override
+    public boolean subscribeUserToService(User user, Service service) {
+        LOG.info("subscribeUserToService");
+        LOG.info(user);
+        LOG.info(service);
+        if (user.getServices().contains(service)) {
+            System.out.println("Юзер вже підписаний на даний сервіс");
+            return false;
+        } else {
+            user.getServices().add(service);
+            return userDAO.updateUser(user);
+        }
+    }
+
+    @Override
+    public boolean unsubscribeUserFromService(User user, Service service) {
+        LOG.info("unsubscribeUserFromService");
+        LOG.info(user);
+        LOG.info(service);
+        for (Service userService : user.getServices()) {
+            if (userService.getId() == service.getId()) {
+                user.getServices().remove(userService);
+                return userDAO.updateUser(user);
+            }
+        }
+        System.out.println("Юзер не підписаний на даний сервіс");
         return false;
     }
 }
