@@ -3,7 +3,8 @@ package entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "incident")
 public class Incident {
