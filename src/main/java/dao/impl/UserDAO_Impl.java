@@ -1,5 +1,6 @@
 package dao.impl;
 
+import entity.Service;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,8 @@ import utils.HibernateUtil;
 import dao.UserDAO;
 import entity.User;
 import org.hibernate.SessionFactory;
+
+import java.util.List;
 
 
 public class UserDAO_Impl implements UserDAO {
@@ -102,5 +105,12 @@ public class UserDAO_Impl implements UserDAO {
         } finally {
             session.close();
         }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        Session session = sessionFactory.openSession();
+        List<User> userList = session.createQuery("select u from User u", User.class).getResultList();
+        return userList;
     }
 }

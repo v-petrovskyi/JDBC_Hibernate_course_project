@@ -56,7 +56,15 @@ public class Console {
         String string = readFromConsole();
         if (Pattern.matches("fetch_all_users", string)) {
             System.out.println("method fetch_all_users");
-            // method fetch_all_users
+            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+                List<User> allUsers = userService.getAllUsers();
+                for (User user : allUsers) {
+                    fetchUserById(String.valueOf(user.getId()));
+                }
+            }else {
+                System.out.println("Немає доступу");
+            }
         } else if (Pattern.matches("fetch_all_incidents", string)) {
             fetchAllIncidents();
         } else if (Pattern.matches("fetch_all_active_incidents", string)) {
@@ -66,7 +74,7 @@ public class Console {
         } else if (Pattern.matches("add_user", string)) {
             if (Authorization.role.equals(UserRole.Role.ADMIN) ||
                     Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
-
+// todo дописати
             }else {
                 System.out.println("Немає доступу");
             }
@@ -142,6 +150,7 @@ public class Console {
             }
             System.out.println("User info");
             tableList.print();
+            System.out.println("\n");
             List<Incident> userIncidents = user.getIncidents();
             if (!userIncidents.isEmpty()){
                 TableList tableListIncidents = new TableList("service name", "is active", "problem description");

@@ -2,6 +2,8 @@ package dao;
 
 import entity.User;
 
+import java.util.List;
+
 public interface UserDAO {
     User getUserById(long id);
     User getUserByUserName(String userName);
@@ -10,4 +12,5 @@ public interface UserDAO {
     boolean deleteUserById(int id);
 
 
+    List<User> getAllUsers();
 }

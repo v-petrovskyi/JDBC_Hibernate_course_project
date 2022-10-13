@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import services.UserService;
 
+import java.util.List;
+
 public class UserServiceImpl implements UserService {
     private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class);
     private final UserDAO userDAO;
@@ -90,5 +92,18 @@ public class UserServiceImpl implements UserService {
         }
         System.out.println("Юзер не підписаний на даний сервіс");
         return false;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        LOG.info("getAllUsers");
+        List<User> userList = userDAO.getAllUsers();
+        if (userList.isEmpty()){
+            LOG.info("userDAO.getAllUsers() did not find a user");
+            System.out.println("не знайдено жодного юзера");
+            return null;
+        }
+        LOG.info("userDAO.getAllUsers() found users");
+        return userList;
     }
 }
