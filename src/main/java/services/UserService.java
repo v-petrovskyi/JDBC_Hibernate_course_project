@@ -10,7 +10,7 @@ public interface UserService {
 
     User getUserByUserName(String userName);
 
-    boolean createUser(User user);
+    boolean addUser(User user);
 
     boolean updateUser(User user);
 

@@ -1,14 +1,17 @@
 import dao.impl.IncidentDAOImpl;
 import dao.impl.ServiceDAOImpl;
 import dao.impl.UserDAO_Impl;
+import dao.impl.UserRoleDAOImpl;
 import entity.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import services.IncidentService;
 import services.ServiceService;
+import services.UserRoleService;
 import services.UserService;
 import services.impl.IncidentServiceImpl;
 import services.impl.ServiceServiceImpl;
+import services.impl.UserRoleServiceImpl;
 import services.impl.UserServiceImpl;
 import utils.Authorization;
 import utils.TableList;
@@ -23,12 +26,14 @@ public class Console {
     private static final UserService userService;
     private static final IncidentService incidentService;
     private static final ServiceService serviceService;
+    private static final UserRoleService userRoleService;
     private static final Logger LOG = LogManager.getLogger(Console.class);
 
     static {
         userService = new UserServiceImpl(new UserDAO_Impl());
         incidentService = new IncidentServiceImpl(new IncidentDAOImpl());
         serviceService = new ServiceServiceImpl(new ServiceDAOImpl());
+        userRoleService = new UserRoleServiceImpl(new UserRoleDAOImpl());
     }
 
 
@@ -48,23 +53,13 @@ public class Console {
             }
         }
         mainMenu();
-
     }
 
     private void mainMenu() {
         System.out.println("Введіть запит:");
         String string = readFromConsole();
         if (Pattern.matches("fetch_all_users", string)) {
-            System.out.println("method fetch_all_users");
-            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
-                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
-                List<User> allUsers = userService.getAllUsers();
-                for (User user : allUsers) {
-                    fetchUserById(String.valueOf(user.getId()));
-                }
-            }else {
-                System.out.println("Немає доступу");
-            }
+            fetchAllUsers();
         } else if (Pattern.matches("fetch_all_incidents", string)) {
             fetchAllIncidents();
         } else if (Pattern.matches("fetch_all_active_incidents", string)) {
@@ -72,12 +67,7 @@ public class Console {
         } else if (Pattern.matches("fetch_user_by_\\d+", string)) {
             fetchUserById(string);
         } else if (Pattern.matches("add_user", string)) {
-            if (Authorization.role.equals(UserRole.Role.ADMIN) ||
-                    Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
-// todo дописати
-            }else {
-                System.out.println("Немає доступу");
-            }
+            addUser();
         } else if (Pattern.matches("update_user_\\d+", string)) {
             // method fetch_user_by_
         } else if (Pattern.matches("delete_user_\\d+", string)) {
@@ -99,6 +89,71 @@ public class Console {
         mainMenu();
     }
 
+    private void addUser() {
+        if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+            System.out.println("Input username");
+            String userName = readFromConsole();
+            System.out.println("input password");
+            String pass = readFromConsole();
+            UserRole role = null;
+            do {
+                System.out.println("Input user role USER, ADMIN, SUPER_ADMIN");
+                String str = readFromConsole();
+                List<UserRole> allRoles = userRoleService.getAllRoles();
+                for (UserRole currentRole : allRoles) {
+                    if (currentRole.getRole().toString().equals(str.trim().toUpperCase())) {
+                        role = currentRole;
+                    }
+                }
+                if (role == null) System.out.println("this role not exists");
+            } while (role == null);
+            User user = new User();
+            user.setUserName(userName);
+            user.setPassword(pass);
+            user.setUserRole(role);
+            userService.addUser(user);
+            System.out.println("would you like to add extra info about user? Y/N");
+            while (true) {
+                String input = readFromConsole().trim();
+                if (input.equalsIgnoreCase("y") || input.equalsIgnoreCase("n")) {
+                    if (input.equalsIgnoreCase("n")) {
+                        mainMenu();
+                    } else {
+                        break;
+                    }
+                }
+            }
+            System.out.println("Input first name");
+            String firstName = readFromConsole().trim();
+            System.out.println("Input last name");
+            String lastName = readFromConsole().trim();
+            System.out.println("Input email");
+            String email = readFromConsole().trim();
+            System.out.println("Input phone number");
+            String phoneNumber = readFromConsole().trim();
+            System.out.println("Input postal code");
+            String postalCode = readFromConsole().trim();
+            Profile profile = new Profile(firstName, lastName, email, phoneNumber, postalCode);
+            user.setProfile(profile);
+            userService.updateUser(user);
+        } else {
+            System.out.println("Немає доступу");
+        }
+    }
+
+    private void fetchAllUsers() {
+        if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+            List<User> allUsers = userService.getAllUsers();
+            for (User user : allUsers) {
+                fetchUserById(String.valueOf(user.getId()));
+            }
+        } else {
+            System.out.println("Немає доступу");
+        }
+    }
+
     private void fetchAllIncidents() {
         if (Authorization.role.equals(UserRole.Role.ADMIN) ||
                 Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
@@ -112,16 +167,16 @@ public class Console {
                 String userName;
                 if (incident.getUser() == null) {
                     userName = "";
-                }else {
-                    userName= incident.getUser().getUserName();
+                } else {
+                    userName = incident.getUser().getUserName();
                 }
-                    tableList.addRow(
-                            String.valueOf(incident.getId()),
-                            incident.getServiceName(),
-                            String.valueOf(incident.isActive()),
-                            incident.getProblemDescription(),
-                            userName
-                    );
+                tableList.addRow(
+                        String.valueOf(incident.getId()),
+                        incident.getServiceName(),
+                        String.valueOf(incident.isActive()),
+                        incident.getProblemDescription(),
+                        userName
+                );
             }
             System.out.println();
             tableList.print();
@@ -135,24 +190,24 @@ public class Console {
         if (Authorization.role.equals(UserRole.Role.ADMIN) ||
                 Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
             User user = userService.getUserById(Integer.parseInt(id.replaceAll("\\D+", "")));
-            TableList tableList = new TableList("","Дані");
+            TableList tableList = new TableList("", "Дані");
             tableList.addRow("id", String.valueOf(user.getId()));
             tableList.addRow("user_name", user.getUserName());
             tableList.addRow("password", user.getPassword());
             tableList.addRow("user role", String.valueOf(user.getUserRole().getRole()));
             Profile userProfile = user.getProfile();
-            if (userProfile !=null){
-                tableList.addRow("first name",userProfile.getFirstName());
-                tableList.addRow("last name",userProfile.getLastName());
-                tableList.addRow("email",userProfile.getEmail());
-                tableList.addRow("phone number",userProfile.getPhoneNumber());
-                tableList.addRow("postal code",userProfile.getPostalCode());
+            if (userProfile != null) {
+                tableList.addRow("first name", userProfile.getFirstName());
+                tableList.addRow("last name", userProfile.getLastName());
+                tableList.addRow("email", userProfile.getEmail());
+                tableList.addRow("phone number", userProfile.getPhoneNumber());
+                tableList.addRow("postal code", userProfile.getPostalCode());
             }
             System.out.println("User info");
             tableList.print();
             System.out.println("\n");
             List<Incident> userIncidents = user.getIncidents();
-            if (!userIncidents.isEmpty()){
+            if (!userIncidents.isEmpty()) {
                 TableList tableListIncidents = new TableList("service name", "is active", "problem description");
                 for (Incident userIncident : userIncidents) {
                     tableListIncidents.addRow(userIncident.getServiceName(), String.valueOf(userIncident.isActive()), userIncident.getProblemDescription());
@@ -162,8 +217,8 @@ public class Console {
                 System.out.println("\n");
             }
             List<Service> userServices = user.getServices();
-            if (!userServices.isEmpty()){
-                TableList tableListServices = new TableList("service name","is active", "service month price", "customer id");
+            if (!userServices.isEmpty()) {
+                TableList tableListServices = new TableList("service name", "is active", "service month price", "customer id");
                 for (Service service : userServices) {
                     tableListServices.addRow(service.getServiceName(), String.valueOf(service.isActive()), String.valueOf(service.getServiceMonthPrice()), String.valueOf(service.getCustomerId()));
                 }
@@ -258,8 +313,8 @@ public class Console {
                 String userName;
                 if (incident.getUser() == null) {
                     userName = "";
-                }else {
-                    userName= incident.getUser().getUserName();
+                } else {
+                    userName = incident.getUser().getUserName();
                 }
                 tableList.addRow(
                         String.valueOf(incident.getId()),

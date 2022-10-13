@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean createUser(User user) {
+    public boolean addUser(User user) {
         LOG.info("createUser");
         LOG.info(user);
         userDAO.createUser(user);

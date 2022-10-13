@@ -29,6 +29,15 @@ public class UserRole {
         this.roleDescription = roleDescription;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserRole{");
+        sb.append("id=").append(id);
+        sb.append(", role=").append(role);
+        sb.append(", roleDescription='").append(roleDescription).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 
     public enum Role {
         USER, ADMIN, SUPER_ADMIN

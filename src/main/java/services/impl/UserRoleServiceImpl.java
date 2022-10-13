@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import services.UserRoleService;
 
+import java.util.List;
+
 public class UserRoleServiceImpl implements UserRoleService {
     private static final Logger LOG = LogManager.getLogger(UserRoleServiceImpl.class);
     private final UserRoleDAO userRoleDAO;
@@ -21,7 +23,12 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public UserRole getUserRoleByRole(String role) {
+    public UserRole getUserRoleByRole(UserRole.Role role) {
         return userRoleDAO.getUserRoleByRole(role);
+    }
+
+    @Override
+    public List<UserRole> getAllRoles() {
+        return userRoleDAO.getAllRoles();
     }
 }
