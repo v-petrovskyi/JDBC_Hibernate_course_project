@@ -3,11 +3,15 @@ package dao.impl;
 import dao.IncidentDAO;
 import entity.Incident;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import utils.HibernateUtil;
+
+import java.util.List;
 
 public class IncidentDAOImpl implements IncidentDAO {
     private final SessionFactory sessionFactory;
@@ -79,5 +83,18 @@ public class IncidentDAOImpl implements IncidentDAO {
         } finally {
             session.close();
         }
+    }
+
+    @Override
+    public List<Incident> getAllIncidents() {
+        Session session = sessionFactory.openSession();
+//        CriteriaBuilder builder = session.getCriteriaBuilder();
+//        CriteriaQuery<Incident> criteriaQuery = builder.createQuery(Incident.class);
+//        criteriaQuery.from(Incident.class);
+//        List<Incident> resultList = session.createQuery(criteriaQuery).getResultList();
+
+        List<Incident> resultList = session.createQuery("select i from Incident i", Incident.class).getResultList();
+        session.close();
+        return resultList;
     }
 }

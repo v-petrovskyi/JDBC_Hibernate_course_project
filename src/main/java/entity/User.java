@@ -30,13 +30,13 @@ public class User {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH}/*, fetch = FetchType.EAGER*/)
     @JoinTable(name = "user_services",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
     private List<Service> services;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user"/*, fetch = FetchType.EAGER*/)
     private List<Incident> incidents;
 
     public User() {

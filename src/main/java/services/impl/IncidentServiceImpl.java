@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import services.IncidentService;
 
+import java.util.List;
+
 public class IncidentServiceImpl implements IncidentService {
     private static final Logger LOG = LogManager.getLogger(IncidentServiceImpl.class);
     private final IncidentDAO incidentDAO;
@@ -45,5 +47,12 @@ public class IncidentServiceImpl implements IncidentService {
         }
         incident.setActive(false);
         return incidentDAO.updateIncident(incident);
+    }
+
+    @Override
+    public List<Incident> getAllIncidents() {
+        LOG.info("getAllIncidents");
+        List<Incident> incidents = incidentDAO.getAllIncidents();
+        return incidents;
     }
 }

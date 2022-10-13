@@ -22,7 +22,7 @@ public class Incident {
     @Column(name = "problem_description")
     private String problemDescription;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH}/*, fetch = FetchType.EAGER*/)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -41,6 +41,5 @@ public class Incident {
         this.problemDescription = problemDescription;
         this.user = user;
     }
-
 
 }
