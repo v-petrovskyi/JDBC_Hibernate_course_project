@@ -21,8 +21,8 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public boolean createService(Service service) {
-        return serviceDAO.createService(service);
+    public boolean addService(Service service) {
+        return serviceDAO.addService(service);
     }
 
     @Override

@@ -23,7 +23,7 @@ public class ServiceDAOImpl implements ServiceDAO {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Service service = session.get(Service.class, id);
-        if (service!= null){
+        if (service != null) {
             LOG.info("service was found");
             LOG.info(service);
             return service;
@@ -33,20 +33,26 @@ public class ServiceDAOImpl implements ServiceDAO {
     }
 
     @Override
-    public boolean createService(Service service) {
+    public boolean addService(Service service) {
+        LOG.info("add service to DB");
+        LOG.info(service);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.persist(service);
         session.getTransaction().commit();
         session.close();
+        LOG.info("service was successfully added to DB");
         return true;
     }
 
     @Override
     public boolean updateService(Service service) {
+        LOG.info("update service");
+        LOG.info(service);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.merge(service);
+        LOG.info("service updated successfully");
         session.getTransaction().commit();
         session.close();
         return true;
@@ -54,9 +60,11 @@ public class ServiceDAOImpl implements ServiceDAO {
 
     @Override
     public boolean deleteServiceById(int id) {
+        LOG.info("try to delete service with id {}", id);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.remove(session.get(Service.class, id));
+        LOG.info("service with id {} deleted successfully", id);
         return true;
     }
 }

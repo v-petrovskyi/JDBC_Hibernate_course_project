@@ -57,36 +57,135 @@ public class Console {
 
     private void mainMenu() {
         System.out.println("Введіть запит:");
-        String string = readFromConsole();
+        String string = readFromConsole().trim().toLowerCase();
         if (Pattern.matches("fetch_all_users", string)) {
+            LOG.info(string);
             fetchAllUsers();
         } else if (Pattern.matches("fetch_all_incidents", string)) {
+            LOG.info(string);
             fetchAllIncidents();
         } else if (Pattern.matches("fetch_all_active_incidents", string)) {
+            LOG.info(string);
             fetchAllActiveIncidents();
         } else if (Pattern.matches("fetch_user_by_\\d+", string)) {
+            LOG.info(string);
             fetchUserById(string);
         } else if (Pattern.matches("add_user", string)) {
+            LOG.info(string);
             addUser();
         } else if (Pattern.matches("update_user_\\d+", string)) {
-            // method fetch_user_by_
+            LOG.info(string);
+            updateUserById(string);
         } else if (Pattern.matches("delete_user_\\d+", string)) {
+            LOG.info(string);
             deleteUserById(string);
         } else if (Pattern.matches("subscribe_service_\\d+", string)) {
+            LOG.info(string);
             subscribeServiceWithId(string);
         } else if (Pattern.matches("unsubscribe_service_\\d+", string)) {
+            LOG.info(string);
             unsubscribeServiceWithId(string);
         } else if (Pattern.matches("create_incident", string)) {
+            LOG.info(string);
             createIncident();
         } else if (Pattern.matches("close_incident_\\d+", string)) {
+            LOG.info(string);
             closeIncident(string);
         } else if (Pattern.matches("q", string)) {
+            LOG.info(string);
             exit();
+        } else if (Pattern.matches("help", string)) {
+            LOG.info(string);
+            help();
         } else {
+            LOG.info(string);
             System.out.println("невірна команда");
-            mainMenu();
+            help();
         }
         mainMenu();
+    }
+
+    private void help() {
+        System.out.println("""
+                General commands:
+                subscribe_service_{id}
+                unsubscribe_service_{id}
+                close_incident_{id}
+                help -- show all commands
+                q -- exit""");
+
+        if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+            System.out.println("""
+                    Commands for ADMIN and SUPER_ADMIN:
+                    fetch_all_users
+                    fetch_all_incidents
+                    fetch_all_active_incidents
+                    fetch_user_by_{id}
+                    add_user
+                    update_user_{id}
+                    delete_user_{id}
+                    close_incident_{id}""");
+        }
+    }
+
+    private void updateUserById(String id) {
+        if (Authorization.role.equals(UserRole.Role.ADMIN) ||
+                Authorization.role.equals(UserRole.Role.SUPER_ADMIN)) {
+            User user = userService.getUserById(Integer.parseInt(id.replaceAll("\\D+", "")));
+            System.out.println("which field do you want to update");
+            System.out.println("""
+                    1. password
+                    2. first name
+                    3. last name
+                    4. email
+                    5. phone number
+                    6. postal code
+                    7. finish updating the user""");
+            String console = readFromConsole();
+            switch (console) {
+                case "1" -> {
+                    System.out.println("input new password");
+                    user.setPassword(readFromConsole());
+                    userService.updateUser(user);
+                }
+                case "2" -> {
+                    System.out.println("input new first name");
+                    user.getProfile().setFirstName(readFromConsole());
+                    userService.updateUser(user);
+                }
+                case "3" -> {
+                    System.out.println("input new last name");
+                    user.getProfile().setLastName(readFromConsole());
+                    userService.updateUser(user);
+                }
+                case "4" -> {
+                    System.out.println("input new email");
+                    user.getProfile().setEmail(readFromConsole());
+                    userService.updateUser(user);
+                }
+                case "5" -> {
+                    System.out.println("input new phone number");
+                    user.getProfile().setPhoneNumber(readFromConsole());
+                    userService.updateUser(user);
+                }
+                case "6" -> {
+                    System.out.println("input new postal code");
+                    user.getProfile().setPostalCode(readFromConsole());
+                    userService.updateUser(user);
+                }
+                case "7" -> {
+                    mainMenu();
+                }
+                default -> {
+                    System.out.println("wrong command");
+                    updateUserById(id);
+                }
+            }
+            updateUserById(id);
+        } else {
+            System.out.println("Немає доступу");
+        }
     }
 
     private void addUser() {
@@ -285,7 +384,7 @@ public class Console {
         String serviceName = readFromConsole();
         System.out.println("input problem description");
         String problemDescription = readFromConsole();
-        if (incidentService.createIncident(new Incident(serviceName, true, problemDescription, Authorization.currentUser))) {
+        if (incidentService.addIncident(new Incident(serviceName, true, problemDescription, Authorization.currentUser))) {
             System.out.println("інцидент успішно створено");
         }
     }

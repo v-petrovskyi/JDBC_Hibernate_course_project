@@ -34,6 +34,7 @@ public class ProfileDAOImpl implements ProfileDAO {
         } finally {
             session.close();
         }
+        LOG.info("profile with id {} was not found",id);
         return null;
     }
 
@@ -46,7 +47,7 @@ public class ProfileDAOImpl implements ProfileDAO {
         session.getTransaction().commit();
         session.close();
         LOG.info("profile updated");
-        return false;
+        return true;
     }
 
     @Override
@@ -56,6 +57,6 @@ public class ProfileDAOImpl implements ProfileDAO {
         session.beginTransaction();
         session.remove(getProfileById(id));
         LOG.info("profile removed");
-        return false;
+        return true;
     }
 }

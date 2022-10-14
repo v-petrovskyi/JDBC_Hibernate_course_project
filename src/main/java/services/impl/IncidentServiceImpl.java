@@ -23,7 +23,7 @@ public class IncidentServiceImpl implements IncidentService {
     }
 
     @Override
-    public boolean createIncident(Incident incident) {
+    public boolean addIncident(Incident incident) {
         return incidentDAO.createIncident(incident);
     }
 

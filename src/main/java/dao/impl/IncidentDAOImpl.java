@@ -87,12 +87,8 @@ public class IncidentDAOImpl implements IncidentDAO {
 
     @Override
     public List<Incident> getAllIncidents() {
+        LOG.info("getAllIncidents starts");
         Session session = sessionFactory.openSession();
-//        CriteriaBuilder builder = session.getCriteriaBuilder();
-//        CriteriaQuery<Incident> criteriaQuery = builder.createQuery(Incident.class);
-//        criteriaQuery.from(Incident.class);
-//        List<Incident> resultList = session.createQuery(criteriaQuery).getResultList();
-
         List<Incident> resultList = session.createQuery("select i from Incident i", Incident.class).getResultList();
         session.close();
         return resultList;

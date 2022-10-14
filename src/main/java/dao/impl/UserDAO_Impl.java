@@ -54,12 +54,15 @@ public class UserDAO_Impl implements UserDAO {
         try {
             user = (User) query.getSingleResult();
             session.getTransaction().commit();
+            LOG.info("found user");
+            LOG.info(user);
             return user;
         } catch (NoResultException e) {
             LOG.error(e);
         } finally {
             session.close();
         }
+        LOG.info("user was not found");
         return null;
     }
 
@@ -109,6 +112,7 @@ public class UserDAO_Impl implements UserDAO {
 
     @Override
     public List<User> getAllUsers() {
+        LOG.info("getAllUsers starts");
         Session session = sessionFactory.openSession();
         List<User> userList = session.createQuery("select u from User u", User.class).getResultList();
         return userList;

@@ -24,25 +24,12 @@ import java.util.List;
 public class Main {
     private static Logger LOG = LogManager.getLogger(Main.class);
 
-//    private static final UserService userService;
-//    private static final IncidentService incidentService;
-//    private static final ServiceService serviceService;
-//    private static final UserRoleService userRoleService;
-//    private static final Logger LOG = LogManager.getLogger(Console.class);
-
-//    static {
-//        userService = new UserServiceImpl(new UserDAO_Impl());
-//        incidentService = new IncidentServiceImpl(new IncidentDAOImpl());
-//        serviceService = new ServiceServiceImpl(new ServiceDAOImpl());
-//        userRoleService = new UserRoleServiceImpl(new UserRoleDAOImpl());
-//    }
-
 
     public static void main(String[] args) {
         LOG.info("main method started");
         String url = "jdbc:mysql://localhost:3306/hibernate_course_project";
         String user_name = "root";
-        String pass = "root1";
+        String pass = "root";
         Flyway flyway = new Flyway();
         flyway.setDataSource(url, user_name, pass);
         flyway.migrate();

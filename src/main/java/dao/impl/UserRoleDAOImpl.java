@@ -59,6 +59,7 @@ public class UserRoleDAOImpl implements UserRoleDAO {
 
     @Override
     public List<UserRole> getAllRoles() {
+        LOG.info("getAllRoles starts");
         Session session = sessionFactory.openSession();
         List<UserRole> resultList = session.createQuery("select ur from UserRole ur", UserRole.class).getResultList();
         return resultList;
