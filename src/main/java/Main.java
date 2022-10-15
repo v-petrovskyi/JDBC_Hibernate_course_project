@@ -34,7 +34,6 @@ public class Main {
         flyway.setDataSource(url, user_name, pass);
         flyway.migrate();
 
-
         Console console = new Console();
         console.start();
 
